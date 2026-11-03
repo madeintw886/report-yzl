@@ -1,86 +1,1994 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>報告系統雛型（範本預設頁）</title>
-  <link rel="stylesheet" href="tokens.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>影像報告撰寫系統（醫師端雛型 v1）</title>
   <style>
-    body {
+    :root {
+      --bg-page: #f4f6f9;
+      --bg-surface: #ffffff;
+      --bg-subtle: #f8fafc;
+      --border-color: #dbe2ea;
+      --text-primary: #1e293b;
+      --text-secondary: #475569;
+      --text-muted: #64748b;
+      --primary: #1d4ed8;
+      --primary-hover: #1e40af;
+      --primary-light: #eff6ff;
+      --success: #15803d;
+      --success-bg: #dcfce7;
+      --info: #0369a1;
+      --info-bg: #e0f2fe;
+      --warning: #b45309;
+      --warning-bg: #fef3c7;
+      --danger: #b91c1c;
+      --danger-bg: #fee2e2;
+      --row-pending: #fffbeb;
+      --row-completed: #f0fdf4;
+      --row-certified: #f0f9ff;
+      --row-dc: #fef2f2;
+      --row-no-image: #f8fafc;
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 10px;
+      --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
       margin: 0;
-      font-family: var(--font-family);
-      font-size: var(--font-size-md);
-      color: var(--color-text);
-      background: var(--color-surface);
-      line-height: 1.6;
+      padding: 0;
     }
-    main {
-      max-width: 960px;
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft JhengHei", "PingFang TC", sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-primary);
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    /* 頂部導覽列 */
+    .topbar {
+      background-color: #0f172a;
+      color: #ffffff;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #1e293b;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .system-title {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .role-badge {
+      background-color: #1d4ed8;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 13px;
+      color: #cbd5e1;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 7px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background-color: var(--primary-hover);
+    }
+
+    .btn-success {
+      background-color: var(--success);
+      color: #ffffff;
+    }
+
+    .btn-success:hover:not(:disabled) {
+      background-color: #166534;
+    }
+
+    .btn-outline {
+      background-color: var(--bg-surface);
+      color: var(--text-primary);
+      border-color: var(--border-color);
+    }
+
+    .btn-outline:hover:not(:disabled) {
+      background-color: var(--bg-subtle);
+      border-color: #94a3b8;
+    }
+
+    .btn-sm {
+      padding: 4px 10px;
+      font-size: 12px;
+    }
+
+    /* 主容器 */
+    .container {
+      max-width: 1440px;
       margin: 0 auto;
-      padding: var(--space-6) var(--space-4);
+      padding: 20px 24px;
     }
-    h1 { font-size: var(--font-size-xl); margin: 0 0 var(--space-2); }
-    h2 { font-size: var(--font-size-lg); margin: var(--space-6) 0 var(--space-2); }
-    p { margin: 0 0 var(--space-3); max-width: 70ch; }
-    .notice {
-      background: var(--color-bg);
-      border: 1px solid var(--color-border);
-      border-left: 4px solid var(--color-primary);
-      border-radius: var(--radius);
-      padding: var(--space-4);
+
+    /* 提示訊息 Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background-color: #0f172a;
+      color: #ffffff;
+      padding: 12px 20px;
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 1000;
+      display: none;
+      border-left: 4px solid #22c55e;
     }
-    .table-wrap { overflow-x: auto; background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius); }
-    table { border-collapse: collapse; width: 100%; font-size: var(--font-size-sm); }
-    th, td { text-align: left; padding: var(--space-2) var(--space-3); border-bottom: 1px solid var(--color-border); white-space: nowrap; }
-    th { color: var(--color-text-muted); font-weight: 600; }
-    tr:last-child td { border-bottom: none; }
-    .status { color: var(--color-text-muted); }
-    code { font-size: 0.95em; }
+
+    /* 統計區塊（明顯顯示未完成報告分項數量與總數） */
+    .stats-banner {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .stats-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .stats-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .stats-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 12px;
+    }
+
+    .stat-card {
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      background-color: var(--bg-subtle);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .stat-card:hover {
+      border-color: var(--primary);
+      background-color: var(--primary-light);
+    }
+
+    .stat-card.active {
+      border: 2px solid var(--primary);
+      background-color: var(--primary-light);
+    }
+
+    .stat-card.total-card {
+      background-color: #eff6ff;
+      border-color: #93c5fd;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .stat-number {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--primary);
+      margin-top: 4px;
+      line-height: 1.1;
+    }
+
+    .stat-number.zero {
+      color: var(--text-muted);
+    }
+
+    .stat-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* 搜尋與篩選列 */
+    .filter-panel {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
+      gap: 12px;
+      align-items: end;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .filter-group label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .filter-control {
+      padding: 7px 10px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-family: inherit;
+      color: var(--text-primary);
+      background-color: #ffffff;
+    }
+
+    .filter-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--border-color);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .filter-toggles {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .checkbox-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    /* 工作清單表格 */
+    .table-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .table-toolbar {
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      background-color: var(--bg-subtle);
+    }
+
+    .legend-list {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f1f5f9;
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 11px 14px;
+      border-bottom: 1px solid var(--border-color);
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    th:hover {
+      background-color: #e2e8f0;
+      color: var(--text-primary);
+    }
+
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 13px;
+      vertical-align: middle;
+    }
+
+    tr.data-row {
+      cursor: pointer;
+      transition: filter 0.12s ease;
+    }
+
+    tr.data-row:hover {
+      filter: brightness(0.96);
+    }
+
+    tr.row-pending {
+      background-color: var(--row-pending);
+    }
+
+    tr.row-completed {
+      background-color: var(--row-completed);
+    }
+
+    tr.row-certified {
+      background-color: var(--row-certified);
+    }
+
+    tr.row-dc {
+      background-color: var(--row-dc);
+    }
+
+    tr.row-no-image {
+      background-color: var(--row-no-image);
+      color: var(--text-muted);
+    }
+
+    /* 狀態標籤 Badge */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .badge-pending {
+      background-color: var(--warning-bg);
+      color: var(--warning);
+      border: 1px solid #fcd34d;
+    }
+
+    .badge-completed {
+      background-color: var(--success-bg);
+      color: var(--success);
+      border: 1px solid #86efac;
+    }
+
+    .badge-certified {
+      background-color: var(--info-bg);
+      color: var(--info);
+      border: 1px solid #7dd3fc;
+    }
+
+    .badge-dc {
+      background-color: var(--danger-bg);
+      color: var(--danger);
+      border: 1px solid #fca5a5;
+    }
+
+    .badge-normal {
+      background-color: #f1f5f9;
+      color: #475569;
+    }
+
+    .badge-img-ready {
+      background-color: #dcfce7;
+      color: #166534;
+    }
+
+    .badge-img-none {
+      background-color: #f1f5f9;
+      color: #64748b;
+    }
+
+    /* ==================== 打報告畫面 ==================== */
+    .hidden {
+      display: none !important;
+    }
+
+    .report-top-nav {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 12px 18px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .adj-records {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 12px;
+    }
+
+    .adj-pill {
+      padding: 5px 10px;
+      border-radius: var(--radius-sm);
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+    }
+
+    .adj-pill.current {
+      background-color: var(--primary-light);
+      border-color: #93c5fd;
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    /* 個案必要資訊卡片 */
+    .patient-banner {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 14px 18px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .patient-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 10px 16px;
+    }
+
+    .info-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .info-label {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .info-value {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .his-clinical-box {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-color);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+      background-color: #f8fafc;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+    }
+
+    .alert-banner {
+      padding: 10px 16px;
+      border-radius: var(--radius-md);
+      margin-bottom: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .alert-dc {
+      background-color: var(--danger-bg);
+      color: var(--danger);
+      border: 1px solid #fca5a5;
+    }
+
+    .alert-no-img {
+      background-color: var(--warning-bg);
+      color: var(--warning);
+      border: 1px solid #fcd34d;
+    }
+
+    /* 打報告雙欄佈局：左側影像示意區 + 右側報告範本欄位 */
+    .report-workspace {
+      display: grid;
+      grid-template-columns: 5fr 7fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    @media (max-width: 1024px) {
+      .report-workspace {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 12px 16px;
+      background-color: var(--bg-subtle);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .panel-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .panel-body {
+      padding: 16px;
+    }
+
+    /* PACS 影像示意區（灰色區塊直接呈現） */
+    .pacs-viewer-placeholder {
+      background-color: #334155;
+      color: #f8fafc;
+      min-height: 320px;
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+      border: 2px solid #475569;
+      position: relative;
+    }
+
+    .pacs-viewer-placeholder .viewer-tag {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background-color: rgba(15, 23, 42, 0.75);
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #93c5fd;
+    }
+
+    .pacs-viewer-placeholder .viewer-meta {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      font-size: 12px;
+      color: #cbd5e1;
+    }
+
+    /* 歷史報告與影像查詢區（直接展開在畫面左側下方，不藏在選單） */
+    .history-section {
+      margin-top: 16px;
+      border-top: 1px solid var(--border-color);
+      padding-top: 14px;
+    }
+
+    .history-list {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .history-item {
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      background-color: var(--bg-subtle);
+      font-size: 12px;
+    }
+
+    .history-item-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .history-preview {
+      color: var(--text-secondary);
+      background-color: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 8px;
+      margin-top: 6px;
+      white-space: pre-line;
+    }
+
+    /* 右側範本欄位與片語區 */
+    .template-field-block {
+      margin-bottom: 18px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      background-color: #fcfdff;
+    }
+
+    .field-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .field-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .phrase-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    .phrase-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .phrase-chip {
+      background-color: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.12s ease;
+      font-family: inherit;
+    }
+
+    .phrase-chip:hover {
+      background-color: #dbeafe;
+      border-color: #60a5fa;
+    }
+
+    .report-textarea {
+      width: 100%;
+      min-height: 82px;
+      padding: 10px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--text-primary);
+      resize: vertical;
+    }
+
+    .report-textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.12);
+    }
+
+    /* 底部操作列 */
+    .report-action-bar {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .action-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
   </style>
 </head>
 <body>
-  <main>
-    <h1>報告系統雛型</h1>
-    <div class="notice">
-      <p>看到這個頁面，代表 GitHub Pages 已經發布成功。</p>
-      <p>完成雛型後，把你的雛型檔案命名為 <code>index.html</code> 上傳，取代這個頁面。</p>
-    </div>
 
-    <h2>模擬資料檢查</h2>
-    <p class="status" id="status">正在讀取 <code>data/exams.json</code>…</p>
-    <div class="table-wrap" hidden id="wrap">
-      <table>
-        <thead>
-          <tr><th>單號</th><th>檢查日期時間</th><th>檢查類別</th><th>醫令狀態</th><th>影像</th><th>報告狀態</th><th>報告醫師</th></tr>
-        </thead>
-        <tbody id="rows"></tbody>
-      </table>
+  <!-- 頂部導覽列（醫師專屬介面，與放射師分開） -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <span class="system-title">醫療影像報告撰寫系統</span>
+      <span class="role-badge">報告醫師專用介面</span>
     </div>
+    <div class="topbar-right">
+      <span>目前登入醫師：<strong id="currentDoctorLabel">醫師甲（放射科）</strong></span>
+      <button class="btn btn-outline btn-sm" style="background:#1e293b;color:#f8fafc;border-color:#475569;" onclick="resetAllData()">
+        重置模擬資料
+      </button>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- ==================== 畫面一：醫師工作清單 ==================== -->
+    <section id="worklistView">
+
+      <!-- 待打報告數量統計區（置於工作清單最上方、明顯呈現分項數量與總數） -->
+      <div class="stats-banner">
+        <div class="stats-header">
+          <div class="stats-title">
+            <span>待打報告數量統計（未完成報告）</span>
+            <span id="statsScopeTag" class="badge badge-certified">統計範圍：醫師甲</span>
+          </div>
+          <span style="font-size:12px;color:var(--text-muted);">點選下方卡片可快速篩選該檢查類別的未完成報告</span>
+        </div>
+        <div class="stats-cards" id="statsCardsContainer">
+          <!-- 由 JS 動態產生總數與各檢查類別分項數量 -->
+        </div>
+      </div>
+
+      <!-- 搜尋與篩選條件（直接列在上方，方便隨時調整） -->
+      <div class="filter-panel">
+        <div class="filter-grid">
+          <div class="filter-group">
+            <label for="filterDoctor">報告醫師（預設登入醫師）</label>
+            <select id="filterDoctor" class="filter-control" onchange="applyFilters()">
+              <option value="醫師甲" selected>醫師甲（本人）</option>
+              <option value="ALL">全部（含未指派／其他醫師）</option>
+              <option value="醫師丙">醫師丙</option>
+              <option value="未指派">未指派</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="filterDate">檢查日期</label>
+            <select id="filterDate" class="filter-control" onchange="applyFilters()">
+              <option value="ALL">全部日期</option>
+              <option value="2026-11-02">2026-11-02</option>
+              <option value="2026-11-03">2026-11-03（今日）</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="filterStatus">報告狀態</label>
+            <select id="filterStatus" class="filter-control" onchange="applyFilters()">
+              <option value="ALL">全部狀態</option>
+              <option value="未完成">未完成</option>
+              <option value="已完成">已完成</option>
+              <option value="已認證">已認證</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="filterCategory">檢查類別</label>
+            <select id="filterCategory" class="filter-control" onchange="applyFilters()">
+              <option value="ALL">全部類別</option>
+              <option value="健檢胸部X光">健檢胸部X光</option>
+              <option value="健檢乳攝">健檢乳攝</option>
+              <option value="門診放射">門診放射</option>
+              <option value="心臟超音波">心臟超音波</option>
+              <option value="頸動脈超音波">頸動脈超音波</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="filterDept">開單單位</label>
+            <select id="filterDept" class="filter-control" onchange="applyFilters()">
+              <option value="ALL">全部單位</option>
+              <option value="健檢中心">健檢中心</option>
+              <option value="肝膽腸胃科">肝膽腸胃科</option>
+              <option value="心臟內科">心臟內科</option>
+              <option value="神經內科">神經內科</option>
+              <option value="家醫科">家醫科</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="filterOrderDoc">開單醫師</label>
+            <select id="filterOrderDoc" class="filter-control" onchange="applyFilters()">
+              <option value="ALL">全部開單醫師</option>
+              <option value="醫師丁">醫師丁</option>
+              <option value="醫師戊">醫師戊</option>
+              <option value="醫師己">醫師己</option>
+              <option value="醫師庚">醫師庚</option>
+              <option value="醫師辛">醫師辛</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="filterKeyword">單號／身分證號／姓名</label>
+            <input
+              type="text"
+              id="filterKeyword"
+              class="filter-control"
+              placeholder="輸入單號或身分證字號..."
+              oninput="applyFilters()"
+            />
+          </div>
+        </div>
+
+        <div class="filter-actions">
+          <div class="filter-toggles">
+            <label class="checkbox-label">
+              <input type="checkbox" id="hideUnshotDC" checked onchange="applyFilters()" />
+              <span>自動移除「已 DC 且未照」之醫令（如 R0008）</span>
+            </label>
+          </div>
+          <div class="action-group">
+            <button class="btn btn-outline btn-sm" onclick="checkTodayAllReports()">
+              查詢當日（11-03）全院清單（防漏分派）
+            </button>
+            <button class="btn btn-outline btn-sm" onclick="resetFilters()">
+              重設為預設篩選（醫師甲）
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 工作清單表格 -->
+      <div class="table-card">
+        <div class="table-toolbar">
+          <div>
+            <strong>檢查工作清單</strong>
+            <span id="tableCountText" style="margin-left:8px;color:var(--text-secondary);font-size:13px;"></span>
+            <span style="margin-left:8px;color:var(--text-muted);font-size:12px;">（點選任一欄位標題可更改排序；點選列進入打報告畫面）</span>
+          </div>
+          <div class="legend-list">
+            <span class="legend-item"><span class="legend-dot" style="background:var(--row-pending);"></span>未完成（待打）</span>
+            <span class="legend-item"><span class="legend-dot" style="background:var(--row-completed);"></span>已完成（已儲存）</span>
+            <span class="legend-item"><span class="legend-dot" style="background:var(--row-certified);"></span>已認證</span>
+            <span class="legend-item"><span class="legend-dot" style="background:var(--row-dc);"></span>醫令已 DC</span>
+            <span class="legend-item"><span class="legend-dot" style="background:var(--row-no-image);"></span>未照影像</span>
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th onclick="sortBy('id')">單號 <span id="sort-id"></span></th>
+                <th onclick="sortBy('examDateTime')">檢查日期時間 <span id="sort-examDateTime">▲</span></th>
+                <th onclick="sortBy('category')">檢查類別 <span id="sort-category"></span></th>
+                <th onclick="sortBy('examName')">檢查名稱 <span id="sort-examName"></span></th>
+                <th onclick="sortBy('department')">開單單位 <span id="sort-department"></span></th>
+                <th onclick="sortBy('orderDoctor')">開單醫師 <span id="sort-orderDoctor"></span></th>
+                <th onclick="sortBy('patientName')">病人（性別／年齡） <span id="sort-patientName"></span></th>
+                <th onclick="sortBy('nationalId')">身分證字號 <span id="sort-nationalId"></span></th>
+                <th onclick="sortBy('orderStatus')">醫令狀態 <span id="sort-orderStatus"></span></th>
+                <th onclick="sortBy('imageStatus')">影像 <span id="sort-imageStatus"></span></th>
+                <th onclick="sortBy('reportStatus')">報告狀態 <span id="sort-reportStatus"></span></th>
+                <th onclick="sortBy('reportDoctor')">報告醫師 <span id="sort-reportDoctor"></span></th>
+              </tr>
+            </thead>
+            <tbody id="worklistTableBody">
+              <!-- 由 JS 渲染 -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 畫面二：打報告畫面 ==================== -->
+    <section id="reportView" class="hidden">
+
+      <!-- 頂部返回與前後筆資料預覽列（參考 B 醫院優點：列出目前及上一筆、下一筆資料） -->
+      <div class="report-top-nav">
+        <div class="action-group">
+          <button class="btn btn-outline" onclick="backToWorklist()">
+            ← 返回工作清單
+          </button>
+          <div class="adj-records" id="adjacentRecordsBar">
+            <!-- 動態顯示上一筆、目前筆、下一筆 -->
+          </div>
+        </div>
+        <div class="action-group">
+          <button class="btn btn-outline btn-sm" id="btnPrevTop" onclick="goPrevExam()">↑ 上一筆檢查</button>
+          <button class="btn btn-outline btn-sm" id="btnNextTop" onclick="goNextExam()">↓ 下一筆檢查</button>
+        </div>
+      </div>
+
+      <!-- 特殊狀態警示（醫令已 DC 或 尚未照相） -->
+      <div id="dcAlertBanner" class="alert-banner alert-dc hidden">
+        <span>⚠️ 注意：此筆檢查醫令狀態為「已 DC（已取消開單）」，但影像狀態為「已照」。請確認是否仍需撰打報告。</span>
+      </div>
+      <div id="noImgAlertBanner" class="alert-banner alert-no-img hidden">
+        <span>⚠️ 注意：此筆檢查目前影像狀態為「未照」，尚無 PACS 影像可供檢視。</span>
+      </div>
+
+      <!-- 個案必要資訊與門診 HIS 臨床資訊（診斷、S、O） -->
+      <div class="patient-banner">
+        <div class="patient-grid" id="patientInfoGrid">
+          <!-- 由 JS 動態填入個案必要資訊 -->
+        </div>
+        <div id="hisClinicalSection" class="his-clinical-box hidden">
+          <!-- 門診個案呈現 HIS 診斷、S、O -->
+        </div>
+      </div>
+
+      <!-- 左右分欄：左側 PACS 影像示意區 + 右側依檢查類別切換之範本欄位 -->
+      <div class="report-workspace">
+
+        <!-- 左側：影像示意區（自動直接呈現，無須點調閱影像）與歷史報告查詢 -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <span class="panel-title">PACS 檢查影像區（進入頁面自動呈現）</span>
+            <div class="action-group">
+              <button class="btn btn-outline btn-sm" onclick="togglePacsImage()">
+                開啟／關閉影像 (F9)
+              </button>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div id="pacsViewerBox" class="pacs-viewer-placeholder">
+              <span class="viewer-tag" id="viewerModalityTag">PACS 影像自動載入完成</span>
+              <div style="font-size:18px;font-weight:700;margin-bottom:8px;">影像顯示區（示意圖）</div>
+              <div id="viewerExamTitle" style="font-size:14px;color:#cbd5e1;margin-bottom:12px;"></div>
+              <div style="font-size:12px;color:#94a3b8;max-width:340px;">
+                （課程中不連接 PACS，以灰色區塊示意。打報告時影像直接呈現，無須醫師手動點選「調閱影像」。）
+              </div>
+              <span class="viewer-meta">快捷鍵：按 F9 可切換顯示／隱藏影像</span>
+            </div>
+
+            <!-- 過去影像與報告查詢／預覽／直接帶入（直接呈現在畫面上，不藏在選單中） -->
+            <div class="history-section">
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-weight:700;font-size:13px;">過去影像與歷史報告查詢（點選可預覽並直接帶入）</span>
+                <span style="font-size:12px;color:var(--text-muted);">示意功能</span>
+              </div>
+              <div class="history-list" id="historyListContainer">
+                <!-- 由 JS 產生該個案歷史報告示意資料 -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 右側：依檢查類別切換之報告範本欄位與片語帶入 -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <div>
+              <span class="panel-title" id="templateHeaderTitle">報告撰寫範本</span>
+              <span id="currentReportStatusBadge" class="badge" style="margin-left:8px;"></span>
+            </div>
+            <!-- 常用輔助功能直接呈現在畫面上，不藏在選單中 -->
+            <div class="action-group">
+              <label class="checkbox-label" style="font-size:12px;color:var(--text-secondary);">
+                <input type="checkbox" id="quickPhraseConfirmJump" />
+                <span>帶入片語後顯示「確認並跳下一筆」按鈕</span>
+              </label>
+              <button class="btn btn-outline btn-sm" onclick="simulateTranslation('zh-to-en')">中翻英（示意）</button>
+              <button class="btn btn-outline btn-sm" onclick="simulateTranslation('en-to-zh')">英翻中（示意）</button>
+            </div>
+          </div>
+
+          <div class="panel-body">
+            <!-- 超音波 SR 結構化數值示意列（僅心超／頸超顯示） -->
+            <div id="srValuesBanner" class="his-clinical-box hidden" style="margin-top:0;margin-bottom:14px;background:#eff6ff;border:1px solid #bfdbfe;">
+              <div><strong>超音波儀器結構化數值 (SR) 串接示意：</strong> LVEF: 64%, AoR: 30mm, LA: 34mm（已移除 TR cm/s、PR cm/s 項目）</div>
+            </div>
+
+            <!-- 動態範本欄位容器 -->
+            <div id="templateFieldsContainer">
+              <!-- 由 JS 依檢查類別產生對應欄位與片語按鈕 -->
+            </div>
+
+            <!-- 底部儲存、認證與上下筆操作列 -->
+            <div class="report-action-bar">
+              <div class="action-group">
+                <button class="btn btn-outline" id="btnPrevBottom" onclick="goPrevExam()">← 上一筆</button>
+                <button class="btn btn-outline" id="btnNextBottom" onclick="goNextExam()">下一筆 →</button>
+              </div>
+              <div class="action-group">
+                <button class="btn btn-outline" onclick="saveCurrentReport(false, false)">
+                  暫存草稿（留在原頁）
+                </button>
+                <button class="btn btn-primary" onclick="saveCurrentReport(false, true)">
+                  儲存（自動跳下一筆未完成報告）
+                </button>
+                <button class="btn btn-success" onclick="saveCurrentReport(true, true)">
+                  認證報告（自動跳下一筆未完成報告）
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
   </main>
+
+  <div id="toastBox" class="toast"></div>
+
   <script>
-    fetch('data/exams.json')
-      .then(function (res) {
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        return res.json();
-      })
-      .then(function (exams) {
-        var rows = document.getElementById('rows');
-        exams.forEach(function (e) {
-          var tr = document.createElement('tr');
-          [e.exam_no, e.exam_at, e.category, e.order_status, e.image_taken ? '已照' : '未照', e.report_status, e.report_doctor || '未指派']
-            .forEach(function (v) {
-              var td = document.createElement('td');
-              td.textContent = v;
-              tr.appendChild(td);
-            });
-          rows.appendChild(tr);
+    // ==================== 1. 案例模擬資料（來自案例資料 P.6 檢查清單） ====================
+    const INITIAL_EXAMS = [
+      {
+        id: "R0001",
+        examDateTime: "2026-11-02 08:40",
+        orderDate: "2026-11-02",
+        category: "健檢胸部X光",
+        examName: "胸部X光數位攝影",
+        department: "健檢中心",
+        orderDoctor: "醫師丁",
+        patientName: "測試一號",
+        gender: "男",
+        age: 45,
+        nationalId: "TEST000001",
+        orderStatus: "正常",
+        imageStatus: "已照",
+        reportStatus: "未完成",
+        reportDoctor: "醫師甲",
+        hisClinical: null,
+        historyReport: {
+          date: "2025-11-05",
+          examName: "胸部X光數位攝影",
+          fields: {
+            Lung: "No active lung lesion.",
+            Others: "Normal heart size.",
+            Suggestion: "Follow-up as clinically indicated."
+          }
+        },
+        reportContent: {}
+      },
+      {
+        id: "R0002",
+        examDateTime: "2026-11-02 09:05",
+        orderDate: "2026-11-02",
+        category: "健檢乳攝",
+        examName: "2D+3D乳房攝影",
+        department: "健檢中心",
+        orderDoctor: "醫師丁",
+        patientName: "測試二號",
+        gender: "女",
+        age: 52,
+        nationalId: "TEST000002",
+        orderStatus: "正常",
+        imageStatus: "已照",
+        reportStatus: "未完成",
+        reportDoctor: "醫師甲",
+        hisClinical: null,
+        historyReport: {
+          date: "2024-10-18",
+          examName: "2D+3D乳房攝影",
+          fields: {
+            Findings: "Scattered areas of fibroglandular density.",
+            Diagnosis: "BI-RADS 1: Negative."
+          }
+        },
+        reportContent: {}
+      },
+      {
+        id: "R0003",
+        examDateTime: "2026-11-02 09:30",
+        orderDate: "2026-11-02",
+        category: "門診放射",
+        examName: "胸部X光（正面）",
+        department: "肝膽腸胃科",
+        orderDoctor: "醫師戊",
+        patientName: "測試三號",
+        gender: "男",
+        age: 63,
+        nationalId: "TEST000003",
+        orderStatus: "正常",
+        imageStatus: "已照",
+        reportStatus: "已完成",
+        reportDoctor: "醫師甲",
+        hisClinical: {
+          diagnosis: "Chronic cough, rule out pneumonia",
+          subjective: "Intermittent cough for 2 weeks, no fever.",
+          objective: "Clear breath sounds bilaterally."
+        },
+        historyReport: {
+          date: "2025-05-12",
+          examName: "胸部X光（正面）",
+          fields: {
+            Finding: "No active lung lesion. No obvious bony abnormality.",
+            Impression: "No significant abnormality."
+          }
+        },
+        reportContent: {
+          Finding: "No active lung lesion.",
+          Impression: "No significant abnormality."
+        }
+      },
+      {
+        id: "R0004",
+        examDateTime: "2026-11-02 10:10",
+        orderDate: "2026-11-02",
+        category: "門診放射",
+        examName: "腹部X光",
+        department: "肝膽腸胃科",
+        orderDoctor: "醫師戊",
+        patientName: "測試四號",
+        gender: "女",
+        age: 58,
+        nationalId: "TEST000004",
+        orderStatus: "已DC",
+        imageStatus: "已照",
+        reportStatus: "未完成",
+        reportDoctor: "醫師甲",
+        hisClinical: {
+          diagnosis: "Abdominal distension",
+          subjective: "Mild epigastric fullness since yesterday.",
+          objective: "Soft abdomen, normoactive bowel sounds."
+        },
+        historyReport: null,
+        reportContent: {}
+      },
+      {
+        id: "R0005",
+        examDateTime: "2026-11-02 10:45",
+        orderDate: "2026-11-02",
+        category: "健檢胸部X光",
+        examName: "胸部X光數位攝影",
+        department: "健檢中心",
+        orderDoctor: "醫師丁",
+        patientName: "測試五號",
+        gender: "女",
+        age: 38,
+        nationalId: "TEST000005",
+        orderStatus: "正常",
+        imageStatus: "已照",
+        reportStatus: "已認證",
+        reportDoctor: "醫師丙",
+        hisClinical: null,
+        historyReport: null,
+        reportContent: {
+          Lung: "No active lung lesion.",
+          Others: "Normal heart size.",
+          Suggestion: "Follow-up as clinically indicated."
+        }
+      },
+      {
+        id: "R0006",
+        examDateTime: "2026-11-02 11:20",
+        orderDate: "2026-11-02",
+        category: "心臟超音波",
+        examName: "心臟超音波",
+        department: "心臟內科",
+        orderDoctor: "醫師己",
+        patientName: "測試六號",
+        gender: "男",
+        age: 71,
+        nationalId: "TEST000006",
+        orderStatus: "正常",
+        imageStatus: "已照",
+        reportStatus: "未完成",
+        reportDoctor: "未指派",
+        hisClinical: {
+          diagnosis: "Hypertensive heart disease",
+          subjective: "Exertional dyspnea on walking upstairs.",
+          objective: "BP 142/86 mmHg, regular heart beat."
+        },
+        historyReport: null,
+        reportContent: {}
+      },
+      {
+        id: "R0007",
+        examDateTime: "2026-11-03 08:50",
+        orderDate: "2026-11-03",
+        category: "頸動脈超音波",
+        examName: "頸動脈超音波",
+        department: "神經內科",
+        orderDoctor: "醫師庚",
+        patientName: "測試七號",
+        gender: "女",
+        age: 66,
+        nationalId: "TEST000007",
+        orderStatus: "正常",
+        imageStatus: "已照",
+        reportStatus: "未完成",
+        reportDoctor: "醫師丙",
+        hisClinical: {
+          diagnosis: "Dizziness and suspected carotid stenosis",
+          subjective: "Transient dizziness episodes for 1 month.",
+          objective: "No focal neurological deficit."
+        },
+        historyReport: null,
+        reportContent: {}
+      },
+      {
+        id: "R0008",
+        examDateTime: "2026-11-03 09:15",
+        orderDate: "2026-11-03",
+        category: "健檢乳攝",
+        examName: "2D+3D乳房攝影",
+        department: "健檢中心",
+        orderDoctor: "醫師丁",
+        patientName: "測試八號",
+        gender: "女",
+        age: 47,
+        nationalId: "TEST000008",
+        orderStatus: "已DC",
+        imageStatus: "未照",
+        reportStatus: "未完成",
+        reportDoctor: "未指派",
+        hisClinical: null,
+        historyReport: null,
+        reportContent: {}
+      },
+      {
+        id: "R0009",
+        examDateTime: "2026-11-03 09:40",
+        orderDate: "2026-11-03",
+        category: "健檢胸部X光",
+        examName: "胸部X光數位攝影",
+        department: "健檢中心",
+        orderDoctor: "醫師丁",
+        patientName: "測試九號",
+        gender: "男",
+        age: 55,
+        nationalId: "TEST000009",
+        orderStatus: "正常",
+        imageStatus: "未照",
+        reportStatus: "未完成",
+        reportDoctor: "未指派",
+        hisClinical: null,
+        historyReport: null,
+        reportContent: {}
+      },
+      {
+        id: "R0010",
+        examDateTime: "2026-11-03 10:20",
+        orderDate: "2026-11-03",
+        category: "門診放射",
+        examName: "胸部X光（正面）",
+        department: "家醫科",
+        orderDoctor: "醫師辛",
+        patientName: "測試十號",
+        gender: "男",
+        age: 49,
+        nationalId: "TEST000010",
+        orderStatus: "正常",
+        imageStatus: "已照",
+        reportStatus: "未完成",
+        reportDoctor: "醫師甲",
+        hisClinical: {
+          diagnosis: "Upper respiratory tract infection with cough",
+          subjective: "Productive cough for 5 days.",
+          objective: "Mildly injected throat, lungs clear."
+        },
+        historyReport: {
+          date: "2024-12-20",
+          examName: "胸部X光（正面）",
+          fields: {
+            Finding: "No active lung lesion.",
+            Impression: "No significant abnormality."
+          }
+        },
+        reportContent: {}
+      }
+    ];
+
+    // ==================== 2. 報告範本與片語定義（來自案例資料 P.2、P.3、P.7） ====================
+    const REPORT_TEMPLATES = {
+      "健檢胸部X光": {
+        name: "健檢：胸部 X 光數位攝影範本",
+        fields: [
+          {
+            key: "Lung",
+            label: "Lung",
+            phrases: [
+              "No active lung lesion.",
+              "Increased lung markings in both lungs."
+            ]
+          },
+          {
+            key: "Others",
+            label: "Others",
+            phrases: [
+              "Normal heart size.",
+              "Mild scoliosis of thoracic spine."
+            ]
+          },
+          {
+            key: "Suggestion",
+            label: "Suggestion",
+            phrases: [
+              "Follow-up as clinically indicated.",
+              "Suggest further evaluation with chest CT."
+            ]
+          }
+        ]
+      },
+      "健檢乳攝": {
+        name: "健檢：2D+3D 乳攝範本（已移除 Breast 欄位）",
+        fields: [
+          {
+            key: "Findings",
+            label: "Findings",
+            phrases: [
+              "Scattered areas of fibroglandular density."
+            ]
+          },
+          {
+            key: "Diagnosis",
+            label: "Diagnosis",
+            phrases: [
+              "BI-RADS 1: Negative.",
+              "BI-RADS 2: Benign finding."
+            ]
+          }
+        ]
+      },
+      "門診放射": {
+        name: "門診：放射科報告範本",
+        fields: [
+          {
+            key: "Finding",
+            label: "Finding",
+            phrases: [
+              "No active lung lesion.",
+              "No obvious bony abnormality."
+            ]
+          },
+          {
+            key: "Impression",
+            label: "Impression",
+            phrases: [
+              "No significant abnormality."
+            ]
+          }
+        ]
+      },
+      "心臟超音波": {
+        name: "心臟超音波報告範本（課程簡化為 Findings、Impression）",
+        fields: [
+          {
+            key: "Findings",
+            label: "Findings",
+            phrases: [
+              "Normal left ventricular systolic function.",
+              "Mild mitral regurgitation."
+            ]
+          },
+          {
+            key: "Impression",
+            label: "Impression",
+            phrases: [
+              "Preserved LV systolic function without regional wall motion abnormality."
+            ]
+          }
+        ]
+      },
+      "頸動脈超音波": {
+        name: "頸動脈超音波報告範本（課程簡化為 Findings、Impression）",
+        fields: [
+          {
+            key: "Findings",
+            label: "Findings",
+            phrases: [
+              "Normal intima-media thickness in bilateral carotid arteries.",
+              "Mild atherosclerotic plaque in bilateral carotid bulbs without significant stenosis."
+            ]
+          },
+          {
+            key: "Impression",
+            label: "Impression",
+            phrases: [
+              "No hemodynamic significant stenosis in extracranial carotid arteries."
+            ]
+          }
+        ]
+      }
+    };
+
+    const ALL_CATEGORIES = [
+      "健檢胸部X光",
+      "健檢乳攝",
+      "門診放射",
+      "心臟超音波",
+      "頸動脈超音波"
+    ];
+
+    // 狀態變數
+    let exams = JSON.parse(JSON.stringify(INITIAL_EXAMS));
+    let sortField = "examDateTime";
+    let sortAsc = true;
+    let currentExamId = null;
+
+    // ==================== 3. 工作清單與統計渲染邏輯 ====================
+    function getFilteredExams() {
+      const doc = document.getElementById("filterDoctor").value;
+      const date = document.getElementById("filterDate").value;
+      const status = document.getElementById("filterStatus").value;
+      const category = document.getElementById("filterCategory").value;
+      const dept = document.getElementById("filterDept").value;
+      const orderDoc = document.getElementById("filterOrderDoc").value;
+      const keyword = document.getElementById("filterKeyword").value.trim().toLowerCase();
+      const hideUnshotDC = document.getElementById("hideUnshotDC").checked;
+
+      return exams
+        .filter((item) => {
+          // 依放射師規則：已 DC 且未照，從清單上移除
+          if (hideUnshotDC && item.orderStatus === "已DC" && item.imageStatus === "未照") {
+            return false;
+          }
+          if (doc !== "ALL" && item.reportDoctor !== doc) return false;
+          if (date !== "ALL" && !item.examDateTime.startsWith(date)) return false;
+          if (status !== "ALL" && item.reportStatus !== status) return false;
+          if (category !== "ALL" && item.category !== category) return false;
+          if (dept !== "ALL" && item.department !== dept) return false;
+          if (orderDoc !== "ALL" && item.orderDoctor !== orderDoc) return false;
+          if (keyword) {
+            const matchId = item.id.toLowerCase().includes(keyword);
+            const matchNatId = item.nationalId.toLowerCase().includes(keyword);
+            const matchName = item.patientName.toLowerCase().includes(keyword);
+            if (!matchId && !matchNatId && !matchName) return false;
+          }
+          return true;
+        })
+        .sort((a, b) => {
+          const valA = String(a[sortField] || "");
+          const valB = String(b[sortField] || "");
+          const cmp = valA.localeCompare(valB, "zh-Hant");
+          return sortAsc ? cmp : -cmp;
         });
-        document.getElementById('status').textContent = '已讀取 ' + exams.length + ' 筆模擬檢查資料。';
-        document.getElementById('wrap').hidden = false;
-      })
-      .catch(function (err) {
-        document.getElementById('status').textContent = '無法讀取模擬資料（' + err.message + '）。請確認 data 資料夾已上傳。直接用瀏覽器開啟本機檔案時也會出現這個訊息，發布到 GitHub Pages 後即可正常讀取。';
+    }
+
+    function renderStatsBanner() {
+      const docFilter = document.getElementById("filterDoctor").value;
+      const activeCategory = document.getElementById("filterCategory").value;
+      const hideUnshotDC = document.getElementById("hideUnshotDC").checked;
+
+      const scopeTag = document.getElementById("statsScopeTag");
+      scopeTag.textContent = docFilter === "ALL" ? "統計範圍：全部醫師（含未指派）" : `統計範圍：${docFilter}`;
+
+      // 統計該範圍內的「未完成」報告
+      const baseList = exams.filter((item) => {
+        if (hideUnshotDC && item.orderStatus === "已DC" && item.imageStatus === "未照") return false;
+        if (docFilter !== "ALL" && item.reportDoctor !== docFilter) return false;
+        return item.reportStatus === "未完成";
       });
+
+      const actionableCount = baseList.filter(
+        (x) => x.orderStatus === "正常" && x.imageStatus === "已照"
+      ).length;
+      const dcCount = baseList.filter((x) => x.orderStatus === "已DC").length;
+      const unshotCount = baseList.filter((x) => x.imageStatus === "未照").length;
+
+      let html = `
+        <div class="stat-card total-card ${activeCategory === 'ALL' ? 'active' : ''}" onclick="quickFilterCategory('ALL')">
+          <span class="stat-label">未完成報告總數</span>
+          <div class="stat-number ${baseList.length === 0 ? 'zero' : ''}">${baseList.length} <span style="font-size:13px;font-weight:600;">份</span></div>
+          <span class="stat-sub">正常可打 ${actionableCount} 份${dcCount > 0 ? `｜含已DC ${dcCount} 份` : ''}${unshotCount > 0 ? `｜未照 ${unshotCount} 份` : ''}</span>
+        </div>
+      `;
+
+      ALL_CATEGORIES.forEach((cat) => {
+        const catItems = baseList.filter((x) => x.category === cat);
+        const catNormal = catItems.filter((x) => x.orderStatus === "正常" && x.imageStatus === "已照").length;
+        const catDC = catItems.filter((x) => x.orderStatus === "已DC").length;
+        html += `
+          <div class="stat-card ${activeCategory === cat ? 'active' : ''}" onclick="quickFilterCategory('${cat}')">
+            <span class="stat-label">${cat}</span>
+            <div class="stat-number ${catItems.length === 0 ? 'zero' : ''}">${catItems.length} <span style="font-size:13px;font-weight:600;">份</span></div>
+            <span class="stat-sub">正常已照 ${catNormal} 份${catDC > 0 ? `（含DC ${catDC} 份）` : ''}</span>
+          </div>
+        `;
+      });
+
+      document.getElementById("statsCardsContainer").innerHTML = html;
+    }
+
+    function quickFilterCategory(category) {
+      document.getElementById("filterCategory").value = category;
+      document.getElementById("filterStatus").value = "未完成";
+      applyFilters();
+    }
+
+    function renderWorklistTable() {
+      const list = getFilteredExams();
+      document.getElementById("tableCountText").textContent = `共 ${list.length} 筆資料`;
+
+      const tbody = document.getElementById("worklistTableBody");
+      if (list.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="12" style="text-align:center;padding:32px;color:var(--text-muted);">
+              目前篩選條件下無符合的檢查資料
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = list
+        .map((item) => {
+          // 決定列底色樣式（結合狀態底色與文字標籤）
+          let rowClass = "row-pending";
+          if (item.orderStatus === "已DC") {
+            rowClass = "row-dc";
+          } else if (item.imageStatus === "未照") {
+            rowClass = "row-no-image";
+          } else if (item.reportStatus === "已認證") {
+            rowClass = "row-certified";
+          } else if (item.reportStatus === "已完成") {
+            rowClass = "row-completed";
+          }
+
+          const orderBadge =
+            item.orderStatus === "已DC"
+              ? `<span class="badge badge-dc">⚠️ 已DC</span>`
+              : `<span class="badge badge-normal">正常</span>`;
+
+          const imgBadge =
+            item.imageStatus === "已照"
+              ? `<span class="badge badge-img-ready">✓ 已照</span>`
+              : `<span class="badge badge-img-none">⏳ 未照</span>`;
+
+          let reportBadge = `<span class="badge badge-pending">● 未完成</span>`;
+          if (item.reportStatus === "已完成") {
+            reportBadge = `<span class="badge badge-completed">✓ 已完成</span>`;
+          } else if (item.reportStatus === "已認證") {
+            reportBadge = `<span class="badge badge-certified">★ 已認證</span>`;
+          }
+
+          return `
+            <tr class="data-row ${rowClass}" onclick="openExamReport('${item.id}')">
+              <td><strong>${item.id}</strong></td>
+              <td>${item.examDateTime}</td>
+              <td>${item.category}</td>
+              <td><strong>${item.examName}</strong></td>
+              <td>${item.department}</td>
+              <td>${item.orderDoctor}</td>
+              <td>${item.patientName}（${item.gender}／${item.age}）</td>
+              <td>${item.nationalId}</td>
+              <td>${orderBadge}</td>
+              <td>${imgBadge}</td>
+              <td>${reportBadge}</td>
+              <td>${item.reportDoctor === '未指派' ? '<span style="color:var(--danger);font-weight:700;">未指派</span>' : item.reportDoctor}</td>
+            </tr>
+          `;
+        })
+        .join("");
+    }
+
+    function applyFilters() {
+      renderStatsBanner();
+      renderWorklistTable();
+    }
+
+    function sortBy(field) {
+      if (sortField === field) {
+        sortAsc = !sortAsc;
+      } else {
+        sortField = field;
+        sortAsc = true;
+      }
+      const allFields = [
+        "id",
+        "examDateTime",
+        "category",
+        "examName",
+        "department",
+        "orderDoctor",
+        "patientName",
+        "nationalId",
+        "orderStatus",
+        "imageStatus",
+        "reportStatus",
+        "reportDoctor"
+      ];
+      allFields.forEach((f) => {
+        const el = document.getElementById(`sort-${f}`);
+        if (el) el.textContent = f === sortField ? (sortAsc ? "▲" : "▼") : "";
+      });
+      renderWorklistTable();
+    }
+
+    function resetFilters() {
+      document.getElementById("filterDoctor").value = "醫師甲";
+      document.getElementById("filterDate").value = "ALL";
+      document.getElementById("filterStatus").value = "ALL";
+      document.getElementById("filterCategory").value = "ALL";
+      document.getElementById("filterDept").value = "ALL";
+      document.getElementById("filterOrderDoc").value = "ALL";
+      document.getElementById("filterKeyword").value = "";
+      document.getElementById("hideUnshotDC").checked = true;
+      applyFilters();
+      showToast("已重設為預設篩選（報告醫師：醫師甲）");
+    }
+
+    function checkTodayAllReports() {
+      document.getElementById("filterDoctor").value = "ALL";
+      document.getElementById("filterDate").value = "2026-11-03";
+      document.getElementById("filterStatus").value = "ALL";
+      document.getElementById("filterCategory").value = "ALL";
+      applyFilters();
+      showToast("已切換為查詢當日（2026-11-03）全院檢查清單，含未指派報告");
+    }
+
+    // ==================== 4. 打報告畫面與連續完成報告流程 ====================
+    function openExamReport(examId) {
+      currentExamId = examId;
+      const exam = exams.find((x) => x.id === examId);
+      if (!exam) return;
+
+      document.getElementById("worklistView").classList.add("hidden");
+      document.getElementById("reportView").classList.remove("hidden");
+
+      renderReportScreen(exam);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function backToWorklist() {
+      currentExamId = null;
+      document.getElementById("reportView").classList.add("hidden");
+      document.getElementById("worklistView").classList.remove("hidden");
+      applyFilters();
+    }
+
+    function renderReportScreen(exam) {
+      // 1. 渲染頂部上一筆、目前筆、下一筆資訊（參考 B 醫院優點）
+      const filteredList = getFilteredExams();
+      const idx = filteredList.findIndex((x) => x.id === exam.id);
+      const prevExam = idx > 0 ? filteredList[idx - 1] : null;
+      const nextExam = idx >= 0 && idx < filteredList.length - 1 ? filteredList[idx + 1] : null;
+
+      document.getElementById("adjacentRecordsBar").innerHTML = `
+        <span class="adj-pill">上一筆：${prevExam ? `${prevExam.id} ${prevExam.patientName}（${prevExam.examName}）` : "無"}</span>
+        <span class="adj-pill current">目前打報告：${exam.id} ${exam.patientName}（${exam.examName}）</span>
+        <span class="adj-pill">下一筆：${nextExam ? `${nextExam.id} ${nextExam.patientName}（${nextExam.examName}）` : "無"}</span>
+      `;
+
+      document.getElementById("btnPrevTop").disabled = !prevExam;
+      document.getElementById("btnNextTop").disabled = !nextExam;
+      document.getElementById("btnPrevBottom").disabled = !prevExam;
+      document.getElementById("btnNextBottom").disabled = !nextExam;
+
+      // 2. 警示橫幅（已 DC 或 未照）
+      document.getElementById("dcAlertBanner").classList.toggle("hidden", exam.orderStatus !== "已DC");
+      document.getElementById("noImgAlertBanner").classList.toggle("hidden", exam.imageStatus !== "未照");
+
+      // 3. 個案必要資訊（身分證號、姓名、性別、年齡、檢查名稱、開單日期、檢查日期時間、開單醫師）
+      document.getElementById("patientInfoGrid").innerHTML = `
+        <div class="info-item"><span class="info-label">單號</span><span class="info-value">${exam.id}</span></div>
+        <div class="info-item"><span class="info-label">姓名（性別／年齡）</span><span class="info-value">${exam.patientName}（${exam.gender}／${exam.age} 歲）</span></div>
+        <div class="info-item"><span class="info-label">身分證字號</span><span class="info-value">${exam.nationalId}</span></div>
+        <div class="info-item"><span class="info-label">檢查類別／名稱</span><span class="info-value">${exam.category} — ${exam.examName}</span></div>
+        <div class="info-item"><span class="info-label">開單日期（示意）</span><span class="info-value">${exam.orderDate}</span></div>
+        <div class="info-item"><span class="info-label">檢查日期時間</span><span class="info-value">${exam.examDateTime}</span></div>
+        <div class="info-item"><span class="info-label">開單單位／開單醫師</span><span class="info-value">${exam.department}／${exam.orderDoctor}</span></div>
+        <div class="info-item"><span class="info-label">報告醫師</span><span class="info-value">${exam.reportDoctor}</span></div>
+      `;
+
+      // 4. 門診個案呈現 HIS 的：診斷、S、O
+      const hisBox = document.getElementById("hisClinicalSection");
+      if (exam.hisClinical) {
+        hisBox.classList.remove("hidden");
+        hisBox.innerHTML = `
+          <div><span class="info-label">HIS 門診診斷 (Diagnosis)</span><div style="font-weight:700;">${exam.hisClinical.diagnosis}</div></div>
+          <div><span class="info-label">S (Subjective 主觀陳述)</span><div>${exam.hisClinical.subjective}</div></div>
+          <div><span class="info-label">O (Objective 客觀發現)</span><div>${exam.hisClinical.objective}</div></div>
+        `;
+      } else {
+        hisBox.classList.add("hidden");
+      }
+
+      // 5. 左側 PACS 影像示意區
+      const viewerBox = document.getElementById("pacsViewerBox");
+      viewerBox.classList.remove("hidden");
+      document.getElementById("viewerModalityTag").textContent =
+        exam.imageStatus === "已照" ? `PACS 影像已就緒｜${exam.id}` : `尚未拍攝影像｜${exam.id}`;
+      document.getElementById("viewerExamTitle").textContent =
+        `${exam.patientName} — ${exam.examName} (${exam.examDateTime})`;
+
+      // 6. 左側下方：過去影像與報告清單（可預覽並直接帶入）
+      const historyContainer = document.getElementById("historyListContainer");
+      if (exam.historyReport) {
+        const previewLines = Object.entries(exam.historyReport.fields)
+          .map(([k, v]) => `[${k}] ${v}`)
+          .join("\n");
+        historyContainer.innerHTML = `
+          <div class="history-item">
+            <div class="history-item-header">
+              <span>📅 ${exam.historyReport.date}｜${exam.historyReport.examName}（含過去影像）</span>
+              <button class="btn btn-outline btn-sm" onclick="importHistoryReport()">確認並直接帶入目前報告</button>
+            </div>
+            <div class="history-preview">${previewLines}</div>
+          </div>
+        `;
+      } else {
+        historyContainer.innerHTML = `
+          <div style="color:var(--text-muted);font-size:12px;padding:8px 0;">此個案無過去同類檢查報告紀錄</div>
+        `;
+      }
+
+      // 7. 右側：依檢查類別切換範本欄位與片語
+      const tpl = REPORT_TEMPLATES[exam.category] || REPORT_TEMPLATES["門診放射"];
+      document.getElementById("templateHeaderTitle").textContent = tpl.name;
+
+      const statusBadge = document.getElementById("currentReportStatusBadge");
+      statusBadge.textContent = exam.reportStatus;
+      statusBadge.className = "badge " + (
+        exam.reportStatus === "已認證"
+          ? "badge-certified"
+          : exam.reportStatus === "已完成"
+          ? "badge-completed"
+          : "badge-pending"
+      );
+
+      // 超音波 SR 示意橫幅
+      const isUltrasound = exam.category === "心臟超音波" || exam.category === "頸動脈超音波";
+      document.getElementById("srValuesBanner").classList.toggle("hidden", !isUltrasound);
+
+      // 產生範本欄位與片語按鈕
+      const fieldsContainer = document.getElementById("templateFieldsContainer");
+      fieldsContainer.innerHTML = tpl.fields
+        .map((field) => {
+          const existingText = exam.reportContent[field.key] || "";
+          const phraseButtons = field.phrases
+            .map(
+              (p) =>
+                `<button type="button" class="phrase-chip" onclick="insertPhrase('${field.key}', '${p.replace(/'/g, "\\'")}')">+ ${p}</button>`
+            )
+            .join("");
+
+          return `
+            <div class="template-field-block">
+              <div class="field-header">
+                <label class="field-name" for="field-${field.key}">${field.label}</label>
+                <button type="button" class="btn btn-outline btn-sm" onclick="clearField('${field.key}')">清空欄位</button>
+              </div>
+              <div class="phrase-bar">
+                <span class="phrase-label">常用片語點擊帶入：</span>
+                ${phraseButtons}
+              </div>
+              <textarea
+                id="field-${field.key}"
+                class="report-textarea"
+                placeholder="請輸入 ${field.label} 報告內容，或點擊上方片語直接帶入..."
+              >${existingText}</textarea>
+            </div>
+          `;
+        })
+        .join("");
+    }
+
+    // 片語帶入
+    function insertPhrase(fieldKey, phraseText) {
+      const textarea = document.getElementById(`field-${fieldKey}`);
+      if (!textarea) return;
+      const current = textarea.value.trim();
+      textarea.value = current ? `${current} ${phraseText}` : phraseText;
+      textarea.focus();
+
+      // 若勾選「帶入片語後顯示確認並跳下一筆」（對應訪談一第二次補充第 7 點）
+      const quickJump = document.getElementById("quickPhraseConfirmJump").checked;
+      if (quickJump) {
+        if (confirm(`已帶入片語：「${phraseText}」\n是否直接確認儲存並跳到下一筆未完成報告？`)) {
+          saveCurrentReport(false, true);
+        }
+      } else {
+        showToast(`已帶入片語至 ${fieldKey}`);
+      }
+    }
+
+    function clearField(fieldKey) {
+      const textarea = document.getElementById(`field-${fieldKey}`);
+      if (textarea) textarea.value = "";
+    }
+
+    // 帶入歷史報告
+    function importHistoryReport() {
+      const exam = exams.find((x) => x.id === currentExamId);
+      if (!exam || !exam.historyReport) return;
+
+      Object.entries(exam.historyReport.fields).forEach(([k, v]) => {
+        const textarea = document.getElementById(`field-${k}`);
+        if (textarea) textarea.value = v;
+      });
+      showToast("已將過去報告內容帶入各對應欄位");
+    }
+
+    // 中英翻譯示意
+    function simulateTranslation(direction) {
+      const label = direction === "zh-to-en" ? "中翻英" : "英翻中";
+      showToast(`【示意功能】已觸發「${label}」轉換（本課程範圍不連接外部翻譯引擎）`);
+    }
+
+    // 開關影像 (支援按鈕與 F9 快捷鍵)
+    function togglePacsImage() {
+      const box = document.getElementById("pacsViewerBox");
+      box.classList.toggle("hidden");
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "F9") {
+        const reportVisible = !document.getElementById("reportView").classList.contains("hidden");
+        if (reportVisible) {
+          e.preventDefault();
+          togglePacsImage();
+          showToast("已透過 F9 切換 PACS 影像顯示狀態");
+        }
+      }
+    });
+
+    // 儲存／認證報告，並自動跳到下一筆未完成的報告
+    function saveCurrentReport(certify = false, autoJumpNext = true) {
+      const exam = exams.find((x) => x.id === currentExamId);
+      if (!exam) return;
+
+      const tpl = REPORT_TEMPLATES[exam.category] || REPORT_TEMPLATES["門診放射"];
+      tpl.fields.forEach((field) => {
+        const textarea = document.getElementById(`field-${field.key}`);
+        if (textarea) {
+          exam.reportContent[field.key] = textarea.value.trim();
+        }
+      });
+
+      exam.reportStatus = certify ? "已認證" : "已完成";
+      const actionLabel = certify ? "認證完成" : "儲存完成";
+
+      if (!autoJumpNext) {
+        renderReportScreen(exam);
+        showToast(`${exam.id}（${exam.patientName}）已暫存草稿`);
+        return;
+      }
+
+      // 尋找下一筆「未完成」的報告（優先從目前篩選清單中尋找正常且已照的未完成報告，若無則找篩選清單中下一筆未完成報告）
+      const filteredList = getFilteredExams();
+      const currentIdx = filteredList.findIndex((x) => x.id === exam.id);
+
+      // 從目前位置往後找未完成報告，找不到再從頭找
+      const orderedCandidates = [
+        ...filteredList.slice(currentIdx + 1),
+        ...filteredList.slice(0, currentIdx)
+      ];
+
+      let nextPending = orderedCandidates.find(
+        (x) => x.reportStatus === "未完成" && x.orderStatus === "正常" && x.imageStatus === "已照"
+      );
+      if (!nextPending) {
+        nextPending = orderedCandidates.find((x) => x.reportStatus === "未完成");
+      }
+
+      if (nextPending) {
+        openExamReport(nextPending.id);
+        showToast(`${exam.id} 已${actionLabel}！已自動跳至下一筆未完成報告：${nextPending.id}（${nextPending.patientName}）`);
+      } else {
+        backToWorklist();
+        showToast(`🎉 ${exam.id} 已${actionLabel}！目前清單中已無其他未完成報告，已返回工作清單。`);
+      }
+    }
+
+    function goPrevExam() {
+      const filteredList = getFilteredExams();
+      const idx = filteredList.findIndex((x) => x.id === currentExamId);
+      if (idx > 0) {
+        openExamReport(filteredList[idx - 1].id);
+      }
+    }
+
+    function goNextExam() {
+      const filteredList = getFilteredExams();
+      const idx = filteredList.findIndex((x) => x.id === currentExamId);
+      if (idx >= 0 && idx < filteredList.length - 1) {
+        openExamReport(filteredList[idx + 1].id);
+      }
+    }
+
+    function resetAllData() {
+      exams = JSON.parse(JSON.stringify(INITIAL_EXAMS));
+      resetFilters();
+      backToWorklist();
+      showToast("已將所有模擬資料恢復為初始狀態");
+    }
+
+    let toastTimer = null;
+    function showToast(msg) {
+      const box = document.getElementById("toastBox");
+      box.textContent = msg;
+      box.style.display = "block";
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        box.style.display = "none";
+      }, 3600);
+    }
+
+    // 初始化
+    applyFilters();
   </script>
 </body>
 </html>
