@@ -1,92 +1,73 @@
-/* tokens.css — 影像報告撰寫系統 迷你設計系統變數（語意色採用：選項 C 視覺降噪・焦點突顯色系） */
+/* 設計系統變數（依起始範本結構整理，報告狀態色採用：選項 C 視覺降噪・焦點突顯色系） */
+
 :root {
-  /* ==========================================================================
-     1. 基礎色彩（主色、背景、表面、文字、邊框）
-     ========================================================================== */
+  /* 色彩：基本 */
   --color-primary: #1d4ed8;
   --color-primary-hover: #1e40af;
   --color-primary-subtle: #eff6ff;
-  --color-primary-subtle-hover: #dbeafe;
   --color-primary-border: #bfdbfe;
 
-  --color-action-certify: #15803d;
-  --color-action-certify-hover: #166534;
-
+  --color-bg: #ffffff;
   --color-bg-page: #f4f6f9;
-  --color-bg-surface: #ffffff;
-  --color-bg-subtle: #f8fafc;
+  --color-surface: #f8fafc;
   --color-bg-muted: #f1f5f9;
-  --color-bg-muted-hover: #e2e8f0;
   --color-bg-inverse: #0f172a;
-  --color-bg-inverse-subtle: #1e293b;
   --color-bg-viewer: #334155;
 
+  --color-text: #1e293b;
   --color-text-primary: #0f172a;
-  --color-text-body: #1e293b;
   --color-text-secondary: #475569;
   --color-text-muted: #64748b;
   --color-text-inverse: #f8fafc;
-  --color-text-inverse-muted: #cbd5e1;
 
-  --color-border-default: #dbe2ea;
+  --color-border: #dbe2ea;
   --color-border-strong: #94a3b8;
-  --color-border-inverse: #475569;
 
-  /* ==========================================================================
-     2. 狀態語意色（選項 C：視覺降噪・焦點突顯色系 + 左側 4px 色條）
-     所有狀態必須同時搭配「圖示符號 + 狀態文字 + 邊框」，不可單靠顏色辨識
-     ========================================================================== */
-
-  /* 狀態 1：未完成 (Pending) — 圖示：⏳ — 高飽和暖金標籤 + 微暖底，凸顯待打焦點 */
+  /* 色彩：報告狀態（選項 C：視覺降噪・焦點突顯色系 + 左側 4px 色條） */
+  /* 未完成（圖示：⏳） */
+  --status-pending: #d97706;
   --status-pending-text: #78350f;
   --status-pending-bg: #fde68a;
   --status-pending-border: #d97706;
-  --status-pending-accent: #d97706;
   --status-pending-row: #fffbeb;
 
-  /* 狀態 2：已完成／已儲存 (Completed) — 圖示：✓ — 森林綠標籤 + 純白列底（降低視覺疲勞） */
+  /* 已完成（圖示：✓） */
+  --status-done: #16a34a;
   --status-completed-text: #14532d;
   --status-completed-bg: #dcfce7;
   --status-completed-border: #16a34a;
-  --status-completed-accent: #16a34a;
   --status-completed-row: #ffffff;
 
-  /* 狀態 3：已認證 (Certified) — 圖示：🔒 — 低調石板灰藍標籤 + 純白列底（已結案退居背景） */
+  /* 已認證（圖示：🔒） */
+  --status-certified: #64748b;
   --status-certified-text: #334155;
   --status-certified-bg: #e2e8f0;
   --status-certified-border: #64748b;
-  --status-certified-accent: #64748b;
   --status-certified-row: #ffffff;
 
-  /* 狀態 4：醫令已 DC／未指派警示 (Discontinued / Alert) — 圖示：🚫 / ⚠️ — 磚紅警示 */
+  /* 醫令已 DC（圖示：🚫） */
+  --status-dc: #dc2626;
   --status-dc-text: #7f1d1d;
   --status-dc-bg: #fecaca;
   --status-dc-border: #dc2626;
-  --status-dc-accent: #dc2626;
   --status-dc-row: #fef2f2;
 
-  /* 狀態 5：未照影像／中性狀態 (Unshot / Neutral) — 圖示：○ — 淺灰弱化 */
+  /* 未照／中性狀態（圖示：○ / ●） */
   --status-neutral-text: #475569;
   --status-neutral-bg: #f1f5f9;
   --status-neutral-border: #94a3b8;
-  --status-neutral-accent: #cbd5e1;
   --status-neutral-row: #f8fafc;
 
-  /* ==========================================================================
-     3. 字級階層（Typography Scale — 固定 5 級 + 統計大數字）
-     ========================================================================== */
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft JhengHei", "PingFang TC", sans-serif;
+  /* 字級 */
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif;
+  --font-size-xs: 12px;
+  --font-size-sm: 13px;
+  --font-size-md: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --font-size-stat: 28px;
 
-  --text-xs: 12px;     /* 表頭、狀態標籤、欄位小標、次要提示文字 */
-  --text-sm: 13px;     /* 表格內文、表單控制項、標準按鈕 */
-  --text-base: 14px;   /* 全頁基準字級、卡片與面板標題、報告輸入框、個案資訊值 */
-  --text-lg: 16px;     /* 區塊主標題 */
-  --text-xl: 18px;     /* 系統頂部導覽標題 */
-  --text-stat: 28px;   /* 待打報告統計大數字 */
-
-  /* ==========================================================================
-     4. 間距階層（Spacing Scale — 以 4px 為基準的 6 個固定層級）
-     ========================================================================== */
+  /* 間距 */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -94,15 +75,11 @@
   --space-5: 20px;
   --space-6: 24px;
 
-  /* ==========================================================================
-     5. 圓角與陰影（Radius & Elevation）
-     ========================================================================== */
-  --radius-sm: 6px;
+  /* 圓角與陰影 */
+  --radius: 6px;
   --radius-md: 8px;
   --radius-lg: 10px;
   --radius-pill: 9999px;
-
   --shadow-card: 0 1px 3px rgba(15, 23, 42, 0.06);
-  --shadow-toast: 0 10px 25px rgba(15, 23, 42, 0.22);
   --focus-ring: 0 0 0 3px rgba(29, 78, 216, 0.16);
 }
