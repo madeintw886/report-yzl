@@ -1,5 +1,3 @@
-> 這是課程範本。開始填寫後可以刪除這一行；使用說明見 `docs/getting-started.md`。
-
 # 影像報告撰寫系統設計（課程案例）
 
 雛型網址：https://madeintw886.github.io/report-yzl/
