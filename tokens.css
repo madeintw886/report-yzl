@@ -1,85 +1,60 @@
-/* 設計系統變數（依起始範本結構整理，報告狀態色採用：選項 C 視覺降噪・焦點突顯色系） */
+/* 設計系統變數 (Design Tokens)
+   依據 background/p-interest web example.jpg (Miyama Graphics 視覺系統) 更新。
+   所有變數與對應規則可配合 design-system.md 使用。 */
 
 :root {
-  /* 色彩：基本 */
-  --color-primary: #1d4ed8;
-  --color-primary-hover: #1e40af;
-  --color-primary-subtle: #eff6ff;
-  --color-primary-border: #bfdbfe;
+  /* 色彩：原始色票 (Color Palette from Reference Image) */
+  --palette-black: #111111;
+  --palette-cream: #F7F3EF;
+  --palette-yellow: #FFE59A;
+  --palette-pink: #FFB5C1;
+  --palette-mint: #B7E1D1;
+  --palette-blue: #A9D3FF;
+  --palette-lavender: #D9C2FF;
 
-  --color-bg: #ffffff;
-  --color-bg-page: #f4f6f9;
-  --color-surface: #f8fafc;
-  --color-bg-muted: #f1f5f9;
-  --color-bg-inverse: #0f172a;
-  --color-bg-viewer: #334155;
+  /* 色彩：基本語意變數 */
+  --color-primary: #111111;         /* 主色：深炭黑（主要按鈕、重點標題、圖示） */
+  --color-accent: #FFE59A;          /* 點綴強調色：暖黃（按鈕內圓形箭頭、高亮區塊） */
+  --color-bg: #F7F3EF;              /* 頁面背景色：暖米白 (#F7F3EF) */
+  --color-surface: #FFFFFF;         /* 卡片與區塊底色：純白 */
+  --color-text: #111111;            /* 主要文字：深炭黑 (#111111) */
+  --color-text-muted: #6E6A63;      /* 次要文字：暖深灰 */
+  --color-border: #DDD8D0;          /* 一般框線（表單輸入框、卡片分隔線） */
+  --color-border-strong: #111111;   /* 強調框線（次要按鈕、Checkbox/Radio 邊框） */
 
-  --color-text: #1e293b;
-  --color-text-primary: #0f172a;
-  --color-text-secondary: #475569;
-  --color-text-muted: #64748b;
-  --color-text-inverse: #f8fafc;
+  /* 色彩：報告狀態（對應參考圖左下角 TAG / CHIP 粉彩色票，搭配 #111111 深色文字與圖示） */
+  --status-pending: #FFE59A;        /* 未完成：暖黃色 (#FFE59A) */
+  --status-done: #A9D3FF;           /* 已完成（含雙讀 1/2 已判讀）：天空藍 (#A9D3FF) */
+  --status-certified: #B7E1D1;      /* 已認證：薄荷綠 (#B7E1D1) */
+  --status-dc: #FFB5C1;             /* 醫令已 DC：櫻花粉 (#FFB5C1) */
+  --status-arbitration: #D9C2FF;    /* 待裁決（乳攝雙人判讀 BI-RADS 不一致）：薰衣草紫 (#D9C2FF) */
 
-  --color-border: #dbe2ea;
-  --color-border-strong: #94a3b8;
+  /* 字體與字級（依據參考圖 Typography：Noto Sans JP Rounded 與四階字級／行高） */
+  --font-family: "Noto Sans JP Rounded", "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif;
+  --font-size-sm: 14px;             /* Light: 14 / 24 */
+  --font-size-md: 16px;             /* Regular: 16 / 28 */
+  --font-size-lg: 20px;             /* Medium: 20 / 32 */
+  --font-size-xl: 32px;             /* Bold: 32 / 44 */
 
-  /* 色彩：報告狀態（選項 C：視覺降噪・焦點突顯色系 + 左側 4px 色條） */
-  /* 未完成（圖示：⏳） */
-  --status-pending: #d97706;
-  --status-pending-text: #78350f;
-  --status-pending-bg: #fde68a;
-  --status-pending-border: #d97706;
-  --status-pending-row: #fffbeb;
-
-  /* 已完成（圖示：✓） */
-  --status-done: #16a34a;
-  --status-completed-text: #14532d;
-  --status-completed-bg: #dcfce7;
-  --status-completed-border: #16a34a;
-  --status-completed-row: #ffffff;
-
-  /* 已認證（圖示：🔒） */
-  --status-certified: #64748b;
-  --status-certified-text: #334155;
-  --status-certified-bg: #e2e8f0;
-  --status-certified-border: #64748b;
-  --status-certified-row: #ffffff;
-
-  /* 醫令已 DC（圖示：🚫） */
-  --status-dc: #dc2626;
-  --status-dc-text: #7f1d1d;
-  --status-dc-bg: #fecaca;
-  --status-dc-border: #dc2626;
-  --status-dc-row: #fef2f2;
-
-  /* 未照／中性狀態（圖示：○ / ●） */
-  --status-neutral-text: #475569;
-  --status-neutral-bg: #f1f5f9;
-  --status-neutral-border: #94a3b8;
-  --status-neutral-row: #f8fafc;
-
-  /* 字級 */
-  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif;
-  --font-size-xs: 12px;
-  --font-size-sm: 13px;
-  --font-size-md: 14px;
-  --font-size-lg: 16px;
-  --font-size-xl: 18px;
-  --font-size-stat: 28px;
+  /* 行高與字重（對應參考圖 Typography 規格） */
+  --line-height-sm: 24px;
+  --line-height-md: 28px;
+  --line-height-lg: 32px;
+  --line-height-xl: 44px;
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
 
   /* 間距 */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
   --space-4: 16px;
-  --space-5: 20px;
   --space-6: 24px;
 
-  /* 圓角與陰影 */
-  --radius: 6px;
-  --radius-md: 8px;
-  --radius-lg: 10px;
-  --radius-pill: 9999px;
-  --shadow-card: 0 1px 3px rgba(15, 23, 42, 0.06);
-  --focus-ring: 0 0 0 3px rgba(29, 78, 216, 0.16);
+  /* 圓角（對應參考圖之圓潤卡片、輸入框與膠囊形按鈕／標籤） */
+  --radius: 12px;                   /* 一般元件與表單欄位圓角 */
+  --radius-card: 20px;              /* 區塊卡片圓角 */
+  --radius-pill: 9999px;            /* 膠囊形按鈕 (Primary/Secondary Button) 與狀態標籤 (Tag/Chip) */
 }
