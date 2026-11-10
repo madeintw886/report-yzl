@@ -1,7 +1,6 @@
 # 醫療影像報告系統設計（課程案例）
 
 - **雛型網址**：[https://madeintw886.github.io/report-yzl/](https://madeintw886.github.io/report-yzl/)
-- **主雛型檔案**：[`index-test.html`](index-test.html)（變數二全面調整雙人判讀版：[`index-dual-read.html`](index-dual-read.html)）
 - **設計系統規範**：[`design-system.md`](design-system.md) ／ [`tokens.css`](tokens.css) ／ [`.agents/skills/design-system/SKILL.md`](.agents/skills/design-system/SKILL.md)
 - **AI 協作日誌**：[`ai-log.md`](ai-log.md)
 
